@@ -42,8 +42,8 @@ async def testSendEmail(req: Request):
     # This is a test e-mail message.
     # """
     try:
-        smtpObj = smtplib.SMTP('localhost')#'smtp.gmail.com', port=587
-        # smtpObj = smtplib.SMTP('smtp.gmail.com',port=587)#'localhost'
+        # smtpObj = smtplib.SMTP('localhost')#'smtp.gmail.com', port=587
+        smtpObj = smtplib.SMTP('smtp.gmail.com',port=587)#'localhost'
         smtpObj.ehlo()
         smtpObj.starttls()
         smtpObj.ehlo()
@@ -52,11 +52,11 @@ async def testSendEmail(req: Request):
         smtpObj.quit()        
         print ("Successfully sent email")
         # return Response(status=200)
-        return Response(content_type='text/plain')
+        return Response(status=200,content_type='text/plain')
     except:
         logging.exception("message")
         print ("Error: unable to send email")
-        return Response(status=500)
+        return Response(status=500,content_type='text/plain')
     # message = EmailMessage()
     # message["From"] = "root@localhost"
     # message["To"] = "ihuang@tsmc.com"
