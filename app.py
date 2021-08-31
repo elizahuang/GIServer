@@ -10,6 +10,7 @@ from aiohttp.web import Request, Response, json_response
 import asyncio
 import smtplib
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from email.header import Header
 from email.message import EmailMessage
 import aiosmtplib
@@ -29,12 +30,30 @@ async def testSendEmail(req: Request):
     import smtplib
     sender = 'yiiiiihuang@gmail.com'
     receivers = ['ihuang@tsmc.com','chtuz@tsmc.com','henry88819@gmail.com']# ['ihuang@tsmc.com']
-    message = MIMEText('Python 邮件发送测试...', 'plain', 'utf-8')
+    
+    #创建一个带附件的实例
+    message = MIMEMultipart()
+    # message = MIMEText('Python 邮件发送测试...', 'plain', 'utf-8')
     message['From'] = Header("菜鸟教程", 'utf-8')   # 发送者
     message['To'] =  Header("测试", 'utf-8')        # 接收者
     
     subject = 'Python SMTP 邮件测试'
     message['Subject'] = Header(subject, 'utf-8')
+    #邮件正文内容
+    message.attach(MIMEText('这是菜鸟教程Python 邮件发送测试……', 'plain', 'utf-8'))
+
+    # 构造附件1，传送当前目录下的 test.txt 文件
+    att1 = MIMEText(open('forTestingUse.txt', 'rb').read(), 'base64', 'utf-8')
+    att1["Content-Type"] = 'application/octet-stream'
+    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
+    att1["Content-Disposition"] = 'attachment; filename="forTestingUse.txt"'
+    message.attach(att1)
+    
+    # 构造附件2，传送当前目录下的 runoob.txt 文件
+    att2 = MIMEText(open('forTestingUse.txt', 'rb').read(), 'base64', 'utf-8')
+    att2["Content-Type"] = 'application/octet-stream'
+    att2["Content-Disposition"] = 'attachment; filename="runoob.txt"'
+    message.attach(att2)
 
     try:
         smtpObj = smtplib.SMTP('smtp.gmail.com',port=587)#'localhost'
