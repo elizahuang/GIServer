@@ -7,6 +7,9 @@ from datetime import datetime
 from aiohttp import web
 from aiohttp.web import Request, Response, json_response
 import asyncio
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
 from email.message import EmailMessage
 import aiosmtplib
 import logging
