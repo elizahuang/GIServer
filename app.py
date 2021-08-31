@@ -40,7 +40,7 @@ async def testSendEmail(req: Request):
         smtpObj.ehlo()
         smtpObj.starttls()
         smtpObj.ehlo()
-        smtpObj.login('yiiiiihuang@gmail.com', 'Bethhaha827')
+        smtpObj.login('yiiiiihuang@gmail.com', 'Taigidian2021')
         smtpObj.sendmail(sender, receivers, message)         
         print ("Successfully sent email")
     except:
