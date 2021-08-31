@@ -36,9 +36,9 @@ async def testSendEmail(req: Request):
         smtpObj = smtplib.SMTP('localhost')#'smtp.gmail.com', port=587
         # smtpObj = smtplib.SMTP('https://1025-coffee-rook-gid6489i.ws-us16.gitpod.io')
         # smtpObj = smtplib.SMTP('smtp.gmail.com',port=587)#'localhost'
-        smtpObj.ehlo()
-        smtpObj.starttls()
-        smtpObj.login('yiiiiihuang@gmail.com', 'Taigidian2021')
+        # smtpObj.ehlo()
+        # smtpObj.starttls()
+        # smtpObj.login('yiiiiihuang@gmail.com', 'Taigidian2021')
         smtpObj.sendmail(sender, receivers, message)         
         print ("Successfully sent email")
         return Response(status=200)
