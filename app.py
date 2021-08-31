@@ -24,7 +24,7 @@ async def testLogRequest(req: Request):
 async def testSendEmail(req: Request):
     import smtplib
     sender = 'yiiiiihuang@gmail.com'
-    receivers = ['ihuang@tsmc.com']# ['ihuang@tsmc.com']
+    receivers = ['ihuang@tsmc.com','chtuz@tsmc.com']# ['ihuang@tsmc.com']
 
     message = """From: From Person <from@fromdomain.com>
     To: To Person <to@todomain.com>
@@ -43,6 +43,7 @@ async def testSendEmail(req: Request):
         smtpObj.login('yiiiiihuang@gmail.com', 'Taigidian2021')
         smtpObj.sendmail(sender, receivers, message)         
         print ("Successfully sent email")
+        return Response(status=200)
     except:
         logging.exception("message")
         print ("Error: unable to send email")
