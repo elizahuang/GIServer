@@ -25,13 +25,18 @@ async def testSendEmail(req: Request):
     import smtplib
     sender = 'yiiiiihuang@gmail.com'
     receivers = ['ihuang@tsmc.com','chtuz@tsmc.com','henry88819@gmail.com']# ['ihuang@tsmc.com']
+    message = MIMEText('Python 邮件发送测试...', 'plain', 'utf-8')
+    message['From'] = Header("菜鸟教程", 'utf-8')   # 发送者
+    message['To'] =  Header("测试", 'utf-8')        # 接收者
+    
+    subject = 'Python SMTP 邮件测试'
+    message['Subject'] = Header(subject, 'utf-8')
+    # message = """From: From Person <from@fromdomain.com>
+    # To: To Person <to@todomain.com>
+    # Subject: SMTP e-mail test
 
-    message = """From: From Person <from@fromdomain.com>
-    To: To Person <to@todomain.com>
-    Subject: SMTP e-mail test
-
-    This is a test e-mail message.
-    """
+    # This is a test e-mail message.
+    # """
     try:
         smtpObj = smtplib.SMTP('localhost')#'smtp.gmail.com', port=587
         # smtpObj = smtplib.SMTP('https://1025-coffee-rook-gid6489i.ws-us16.gitpod.io')
@@ -39,7 +44,7 @@ async def testSendEmail(req: Request):
         # smtpObj.ehlo()
         # smtpObj.starttls()
         # smtpObj.login('yiiiiihuang@gmail.com', 'Taigidian2021')
-        smtpObj.sendmail(sender, receivers, message)         
+        smtpObj.sendmail(sender, receivers, message.as_string())         
         print ("Successfully sent email")
         return Response(status=200)
     except:
