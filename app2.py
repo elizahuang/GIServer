@@ -3,7 +3,7 @@ from flask import Flask
 from flask_cors import CORS
 import socketio
 
-sio = socketio.Server(async_mode='threading')
+sio = socketio.Server(async_mode='threading',cors_allowed_origins='*')
 app = Flask(__name__)
 CORS(app)
 app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
