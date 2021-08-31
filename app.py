@@ -16,7 +16,7 @@ import aiosmtplib
 import logging
 
 sio = socketio.AsyncServer(async_mode='aiohttp',cors_allowed_origins='*')
-APP = web.Application()#middlewares=[aiohttp_error_middleware]
+APP = web.Application()
 sio.attach(APP)
 client_sid=None
 
@@ -35,14 +35,8 @@ async def testSendEmail(req: Request):
     
     subject = 'Python SMTP 邮件测试'
     message['Subject'] = Header(subject, 'utf-8')
-    # message = """From: From Person <from@fromdomain.com>
-    # To: To Person <to@todomain.com>
-    # Subject: SMTP e-mail test
 
-    # This is a test e-mail message.
-    # """
     try:
-        # smtpObj = smtplib.SMTP('localhost')#'smtp.gmail.com', port=587
         smtpObj = smtplib.SMTP('smtp.gmail.com',port=587)#'localhost'
         smtpObj.ehlo()
         smtpObj.starttls()
@@ -51,7 +45,6 @@ async def testSendEmail(req: Request):
         smtpObj.sendmail(sender, receivers, message.as_string()) 
         smtpObj.quit()        
         print ("Successfully sent email")
-        # return Response(status=200)
         return Response(status=200,content_type='text/plain')
     except:
         logging.exception("message")
