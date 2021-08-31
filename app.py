@@ -24,7 +24,7 @@ async def testLogRequest(req: Request):
 async def testSendEmail(req: Request):
     import smtplib
     sender = 'yiiiiihuang@gmail.com'
-    receivers = ['eliza85827@gmail.com']# ['ihuang@tsmc.com']
+    receivers = ['ihuang@tsmc.com']# ['ihuang@tsmc.com']
 
     message = """From: From Person <from@fromdomain.com>
     To: To Person <to@todomain.com>
