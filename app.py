@@ -43,15 +43,18 @@ async def testSendEmail(req: Request):
     try:
         # smtpObj = smtplib.SMTP('localhost')#'smtp.gmail.com', port=587
         smtpObj = smtplib.SMTP('smtp.gmail.com',port=587)#'localhost'
-        # smtpObj.ehlo()
-        # smtpObj.starttls()
+        smtpObj.ehlo()
+        smtpObj.starttls()
+        smtpObj.ehlo()
         smtpObj.login('yiiiiihuang@gmail.com', 'Taigidian2021')
-        smtpObj.sendmail(sender, receivers, message.as_string())         
+        smtpObj.sendmail(sender, receivers, message.as_string()) 
+        smtpObj.quit()        
         print ("Successfully sent email")
         return Response(status=200)
     except:
         logging.exception("message")
         print ("Error: unable to send email")
+        return Response(status=500)
     # message = EmailMessage()
     # message["From"] = "root@localhost"
     # message["To"] = "ihuang@tsmc.com"
