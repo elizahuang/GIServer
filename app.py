@@ -33,7 +33,7 @@ async def testSendEmail(req: Request):
     This is a test e-mail message.
     """
     try:
-        smtpObj = smtplib.SMTP('smtp.gmail.com', port=587)
+        smtpObj = smtplib.SMTP('localhost')#'smtp.gmail.com', port=587
         # smtpObj = smtplib.SMTP('https://1025-coffee-rook-gid6489i.ws-us16.gitpod.io')
         # smtpObj = smtplib.SMTP('smtp.gmail.com',port=587)#'localhost'
         smtpObj.ehlo()
