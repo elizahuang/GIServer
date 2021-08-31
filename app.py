@@ -34,7 +34,7 @@ async def testSendEmail(req: Request):
     """
     try:
         smtpObj = smtplib.SMTP('smtp.gmail.com')
-        smtpObj.connect("smtp.gmail.com",port='587')
+        smtpObj.connect("smtp.gmail.com",port=587)
         # smtpObj = smtplib.SMTP('https://1025-coffee-rook-gid6489i.ws-us16.gitpod.io')
         # smtpObj = smtplib.SMTP('smtp.gmail.com',port=587)#'localhost'
         smtpObj.ehlo()
