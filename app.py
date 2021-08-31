@@ -24,7 +24,7 @@ async def testLogRequest(req: Request):
 async def testSendEmail(req: Request):
     import smtplib
     sender = 'yiiiiihuang@gmail.com'
-    receivers = ['ihuang@tsmc.com']
+    receivers = ['eliza85827@gmail.com']# ['ihuang@tsmc.com']
 
     message = """From: From Person <from@fromdomain.com>
     To: To Person <to@todomain.com>
@@ -33,11 +33,14 @@ async def testSendEmail(req: Request):
     This is a test e-mail message.
     """
     try:
-        smtpObj = smtplib.SMTP()
-        smtpObj.connect('smtp.gmail.com',port=587)
+        smtpObj = smtplib.SMTP('smtp.gmail.com')
+        smtpObj.connect("smtp.gmail.com",port='587')
+        # smtpObj = smtplib.SMTP('https://1025-coffee-rook-gid6489i.ws-us16.gitpod.io')
         # smtpObj = smtplib.SMTP('smtp.gmail.com',port=587)#'localhost'
-        
-        smtpObj.login('yiiiiihuang@gmail.com', 'Bethaha827')
+        smtpObj.ehlo()
+        smtpObj.starttls()
+        smtpObj.ehlo()
+        smtpObj.login('yiiiiihuang@gmail.com', 'Bethhaha827')
         smtpObj.sendmail(sender, receivers, message)         
         print ("Successfully sent email")
     except:
