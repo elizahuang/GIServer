@@ -13,8 +13,11 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
 from email.message import EmailMessage
+# from subprocess import check_output
+import subprocess
 import aiosmtplib
 import logging
+import shutil
 
 sio = socketio.AsyncServer(async_mode='aiohttp',cors_allowed_origins='*')
 APP = web.Application()
@@ -27,57 +30,50 @@ async def testLogRequest(req: Request):
     await sio.emit('getLog', to=client_sid)
     print('finish emit')
 
-async def testSendEmail(req=None,dataToSend=None):
-    import smtplib
-    sender = 'yiiiiihuang@gmail.com'
-    receivers = ['ihuang@tsmc.com','chtuz@tsmc.com','henry88819@gmail.com']# ['ihuang@tsmc.com']
-    
-    #创建一个带附件的实例
-    message = MIMEMultipart()
-    # message = MIMEText('Python 邮件发送测试...', 'plain', 'utf-8')
-    message['From'] = Header("菜鸟教程", 'utf-8')   # 发送者
-    message['To'] =  Header("测试", 'utf-8')        # 接收者
-    
-    subject = 'Python SMTP 邮件测试'
-    message['Subject'] = Header(subject, 'utf-8')
-    #邮件正文内容
-    message.attach(MIMEText(str(dataToSend) if dataToSend else '这是菜鸟教程Python 邮件发送测试……', 'plain', 'utf-8'))
 
-    # 构造附件1，传送当前目录下的 test.txt 文件
-    att1 = MIMEText(open('forTestingUse.txt', 'rb').read(), 'base64', 'utf-8')
-    att1["Content-Type"] = 'application/octet-stream'
-    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att1["Content-Disposition"] = 'attachment; filename="forTestingUse.txt"'
-    message.attach(att1)
+async def sendMailX(req=None,dataToSend=None):
+    #hostname, timestamp, 機器類型, 廠商的mail, serial_number(index=bare_metal)
+    testData={'hostname':'testinghostAAA',
+              'timestamp':1630466370,
+              'machine_type':'DELL',
+              'manufacture':'DELL',
+              'destin_mail_address':'ihuang@tsmc.com',
+              'serial_num':'SE123456', 
+              'logs':{'log_name1':'teststring11111teststring11111teststring11111teststring11111',
+                      'log_name2':'teststring222teststring222teststring222',
+                      'log_name3':'teststring33333teststring33333teststring33333'}}
     
-    # 构造附件2，传送当前目录下的 runoob.txt 文件
-    att2 = MIMEText(open('forTestingUse.txt', 'rb').read(), 'base64', 'utf-8')
-    att2["Content-Type"] = 'application/octet-stream'
-    att2["Content-Disposition"] = 'attachment; filename="runoob.txt"'
-    message.attach(att2)
+    dataToSend=testData
+    logs=dataToSend.pop('logs')
+    destin_mail_address=dataToSend.pop('destin_mail_address')
+    dirPath= os.path.join(os.path.dirname(__file__), str(dataToSend['timestamp']))
+    os.mkdir(dirPath)
+    for key,value in logs.items():          
+        completeName = os.path.join(dirPath, str(key)+".txt")
+        f = open(completeName, "x")
+        f.write(str(value))
+        f.close()
+        # f = open(completeName, "r")
+        # print(f.read())
+    
+    completeName = os.path.join(dirPath, "needRepairInfo.txt")
+    f = open(completeName, "x")
+    f.write(str(dataToSend))
+    f.close()
+    # f = open(completeName, "r")
+    # print(f.read())
 
-    try:
-        smtpObj = smtplib.SMTP('smtp.gmail.com',port=587)#'localhost'
-        smtpObj.ehlo()
-        smtpObj.starttls()
-        smtpObj.ehlo()
-        smtpObj.login('yiiiiihuang@gmail.com', 'Taigidian2021')
-        smtpObj.sendmail(sender, receivers, message.as_string()) 
-        smtpObj.quit()        
-        print ("Successfully sent email")
-        return Response(status=200,content_type='text/plain') 
-    except:
-        logging.exception("message")
-        print ("Error: unable to send email")
-        return Response(status=500,content_type='text/plain') 
-    # message = EmailMessage()
-    # message["From"] = "root@localhost"
-    # message["To"] = "ihuang@tsmc.com"
-    # message["Subject"] = "Hello World!"
-    # message.set_content("Sent via aiosmtplib")
-    # await aiosmtplib.send(message, hostname="127.0.0.1", port=25)
-    # loop = asyncio.get_event_loop()
-    # loop.run_until_complete(aiosmtplib.send(message, hostname="127.0.0.1", port=25))
+    mailxCommand=['mailx','-s','tsmc'+testData['machine_type']+'repair']
+    for path in os.listdir(dirPath):
+        full_path = os.path.join(dirPath, path)
+        if os.path.isfile(full_path):
+            mailxCommand.append('-a')
+            mailxCommand.append(str(full_path))
+    mailxCommand.append(str(destin_mail_address))
+    print('mailxCommand:',mailxCommand)
+    # print(subprocess.check_output(mailxCommand).decode())
+    shutil.rmtree(dirPath)
+
 
 
 # If we wanted to create a new websocket endpoint,
@@ -90,7 +86,7 @@ async def logResult(sid, log_result):
 @sio.on('sendLogMail')
 async def sendLogMail(sid, dataToSend):
     print('dataToSend:\n',dataToSend)
-    await testSendEmail(dataToSend=dataToSend)
+    await sendMailX(dataToSend)
     await sio.emit('getLog',dataToSend, to=admin_client_sid, namespace='/admin')
 
 @sio.on('connect')
@@ -115,7 +111,7 @@ def admin_disconnect(sid):
 
 
 APP.router.add_get('/testLogRequest', testLogRequest)
-APP.router.add_get('/testSendEmail',testSendEmail)
+APP.router.add_get('/testMailX',sendMailX)
 
 if __name__ == "__main__":
     try:
@@ -123,6 +119,6 @@ if __name__ == "__main__":
         port = int(sys.argv[1])
         # port = os.getenv('PORT', default=8080)
         web.run_app(APP,port=port)
-        # web.run_app(APP)
+
     except Exception as error:
         raise error
