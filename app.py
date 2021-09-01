@@ -81,12 +81,13 @@ async def sendMailX(req=None,dataToSend=None):
 @sio.on('logResult')
 async def logResult(sid, log_result):
     print('log_result:\n',log_result)
+    await sendMailX(log_result)
+    print('mailSent')
 
 
 @sio.on('sendLogMail')
 async def sendLogMail(sid, dataToSend):
     print('dataToSend:\n',dataToSend)
-    await sendMailX(dataToSend)
     await sio.emit('getLog',dataToSend, to=admin_client_sid, namespace='/admin')
 
 @sio.on('connect')
