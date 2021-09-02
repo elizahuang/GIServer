@@ -70,7 +70,7 @@ async def sendMailX(req=None,dataToSend=None):
 
 # If we wanted to create a new websocket endpoint,
 # use this decorator, passing in the name of the event we wish to listen out for
-@sio.on('logResult')
+@sio.on('logResult',namespace='/admin')
 async def logResult(sid, log_result):
     print('log_result:\n',log_result)
     await sendMailX(log_result)
