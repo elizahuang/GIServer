@@ -1,23 +1,15 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-import sys,os,json
-import socketio
+import sys,os,json,subprocess,logging, shutil, socketio
+import asyncio
+import smtplib
 from datetime import datetime
 from aiohttp import web
 from multidict import MultiDict
 from aiohttp.web import Request, Response, json_response
-import asyncio
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.header import Header
-from email.message import EmailMessage
-# from subprocess import check_output
-import subprocess
-import aiosmtplib
-import logging
-import shutil
+from subprocess import check_output
+
 
 sio = socketio.AsyncServer(async_mode='aiohttp',cors_allowed_origins='*')
 APP = web.Application()
